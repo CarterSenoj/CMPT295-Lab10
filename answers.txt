@@ -1,0 +1,55 @@
+carterjones@CartersLaptop /m/c/U/1/D/CMPT295-Lab10 (main) [1]> gcc -Wall -Wpedantic -std=c17 -m
+arch=haswell -O3  timing.c  lab10c.c lab10.S -o tests
+carterjones@CartersLaptop /m/c/U/1/D/CMPT295-Lab10 (main)> ./tests
+                   warmup took   101.4 ms
+                   warmup took    40.3 ms
+             dot_double_c took    41.4 ms
+               dot_double took    40.7 ms
+             dot_single_c took    30.8 ms
+               dot_single took    33.3 ms
+       map_poly_double_c1 took    83.7 ms
+       map_poly_double_c2 took    77.8 ms
+          map_poly_double took   222.5 ms
+        map_poly_single_c took    85.3 ms
+          map_poly_single took   175.3 ms
+
+1. What was the running time of the dot product implementations?
+   Assembly vs the compiler, and single- vs double-precision?
+
+Assembly and C are very very close in run time on my laptop being
+40.7ms vs 41.4ms for doubles and 33.3ms vs 30.8ms. I also notice that
+with single the C code is faster than the asm and vice versa for double.
+Single precision is ~25% faster than double precision in this test.
+
+2. Same question, but for the polynomial evaluation? 
+(Prediction: the differences should be much more obvious here.)
+
+The asm is much slower than the C versions with 222.5ms vs 77.8 for double 
+precision and 175.3ms vs 85.3ms for single. I assume this to be because 
+the compiler is just that much better at optimizing this operation. 
+
+
+3. What is the relative running time of the x87-based sine calculation vs the C implementation (that uses its own implementation of the function)?
+I tested with different array sizes from 100,000 - 100,000,000. With a small array size (100,000) I noticed that the asm code was faster, however, 
+as I added more array elements the C code quickly surpassed the asm code and the asm code because much less useable. Im sure these
+results continue with larger arrays but when I tried 1 billion it forced a SIGKILL in my terminal and I left it here. 
+
+C is 0.62x the speed of asm
+100 thousand:
+sin_x87 took 8 ms
+sin_stdlib took 13 ms
+
+C is 1.34x the speed of asm
+1 million:
+sin_x87 took 47 ms
+sin_stdlib took 35 ms
+
+C is 1.87x the speed of asm
+10 million:
+sin_x87 took 471 ms
+sin_stdlib took 252 ms
+
+C is 0.67x the speed of asm
+100 million: 
+sin_x87 took 5299 ms
+sin_stdlib took 3170 ms
